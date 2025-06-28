@@ -149,24 +149,24 @@
             </div>
 
             <!-- Analysis Results -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-4 mb-6">
                 <!-- Price Chart -->
-                <div class="card p-10">
-                    <h2 class="text-4xl font-bold mb-8 text-center text-gray-800">
+                <div class="card p-2 md:p-4">
+                    <h2 class="text-base md:text-2xl font-bold mb-2 md:mb-4 text-center text-gray-800">
                         <i class="fas fa-chart-line mr-4 text-blue-500"></i>Price Chart
                     </h2>
-                    <div class="aspect-w-16 aspect-h-9">
+                    <div class="aspect-w-16 aspect-h-9 max-h-32 md:max-h-48 mb-2 md:mb-4">
                         <img src="{{ url_for('static', filename='price_chart.png') }}" 
                              alt="Price Chart" class="w-full h-full object-contain rounded-2xl">
                     </div>
                 </div>
 
                 <!-- Technical Indicators -->
-                <div class="card p-10">
-                    <h2 class="text-4xl font-bold mb-8 text-center text-gray-800">
+                <div class="card p-2 md:p-4">
+                    <h2 class="text-base md:text-2xl font-bold mb-2 md:mb-4 text-center text-gray-800">
                         <i class="fas fa-chart-bar mr-4 text-green-500"></i>Technical Indicators
                     </h2>
-                    <div class="aspect-w-16 aspect-h-9">
+                    <div class="aspect-w-16 aspect-h-9 max-h-32 md:max-h-48 mb-2 md:mb-4">
                         <img src="{{ url_for('static', filename='indicators.png') }}" 
                              alt="Technical Indicators" class="w-full h-full object-contain rounded-2xl">
                     </div>
@@ -174,66 +174,76 @@
             </div>
 
             <!-- Analysis Details -->
-            <div class="card p-10 mb-10">
-                <h2 class="text-4xl font-bold mb-8 text-center text-gray-800">
+            <div class="card p-2 md:p-4 mb-6">
+                <h2 class="text-base md:text-2xl font-bold mb-2 md:mb-4 text-center text-gray-800">
                     <i class="fas fa-info-circle mr-4 text-indigo-500"></i>Analysis Details
                 </h2>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    <div class="metric-card">
-                        <h3 class="text-2xl font-bold mb-4 text-indigo-600">Current Price</h3>
-                        <p class="text-4xl font-bold text-gray-800">₹{{ analysis.current_price }}</p>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-2 md:gap-4">
+                    <div class="metric-card p-2 md:p-4">
+                        <h3 class="text-sm md:text-lg font-bold mb-1 md:mb-2 text-indigo-600">Current Price</h3>
+                        <p class="text-base md:text-xl font-bold text-gray-800">₹{{ analysis.current_price }}</p>
                     </div>
-                    <div class="metric-card">
-                        <h3 class="text-2xl font-bold mb-4 text-indigo-600">52-Week High</h3>
-                        <p class="text-4xl font-bold text-gray-800">₹{{ analysis.high_52w }}</p>
+                    <div class="metric-card p-2 md:p-4">
+                        <h3 class="text-sm md:text-lg font-bold mb-1 md:mb-2 text-indigo-600">52-Week High</h3>
+                        <p class="text-base md:text-xl font-bold text-gray-800">₹{{ analysis.high_52w }}</p>
                     </div>
-                    <div class="metric-card">
-                        <h3 class="text-2xl font-bold mb-4 text-indigo-600">52-Week Low</h3>
-                        <p class="text-4xl font-bold text-gray-800">₹{{ analysis.low_52w }}</p>
+                    <div class="metric-card p-2 md:p-4">
+                        <h3 class="text-sm md:text-lg font-bold mb-1 md:mb-2 text-indigo-600">52-Week Low</h3>
+                        <p class="text-base md:text-xl font-bold text-gray-800">₹{{ analysis.low_52w }}</p>
                     </div>
                 </div>
             </div>
 
             <!-- Technical Analysis -->
-            <div class="card p-10">
-                <h2 class="text-4xl font-bold mb-8 text-center text-gray-800">
+            <div class="card p-2 md:p-4">
+                <h2 class="text-base md:text-2xl font-bold mb-2 md:mb-4 text-center text-gray-800">
                     <i class="fas fa-chart-bar mr-4 text-purple-500"></i>Technical Analysis
                 </h2>
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
-                    <div class="metric-card">
-                        <h3 class="text-2xl font-bold mb-4 text-purple-600">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-2 md:gap-4">
+                    <div class="metric-card p-2 md:p-4">
+                        <h3 class="text-sm md:text-lg font-bold mb-1 md:mb-2 text-purple-600">
                             <i class="fas fa-chart-line mr-2"></i>RSI
                         </h3>
-                        <p class="text-4xl font-bold {% if analysis.rsi > 70 %}trend-down{% elif analysis.rsi < 30 %}trend-up{% else %}trend-neutral{% endif %}">
+                        <p class="text-base md:text-xl font-bold {% if analysis.rsi > 70 %}trend-down{% elif analysis.rsi < 30 %}trend-up{% else %}trend-neutral{% endif %}">
                             {{ analysis.rsi }}
                         </p>
-                        <p class="text-gray-600 mt-3 font-semibold">Relative Strength Index</p>
+                        <p class="text-xs md:text-base text-gray-600 mt-1 font-semibold">Relative Strength Index</p>
                     </div>
-                    <div class="metric-card">
-                        <h3 class="text-2xl font-bold mb-4 text-purple-600">
+                    <div class="metric-card p-2 md:p-4">
+                        <h3 class="text-sm md:text-lg font-bold mb-1 md:mb-2 text-purple-600">
                             <i class="fas fa-chart-area mr-2"></i>MACD
                         </h3>
-                        <p class="text-4xl font-bold {% if analysis.macd > 0 %}trend-up{% else %}trend-down{% endif %}">
+                        <p class="text-sm md:text-xl font-bold {% if analysis.macd > 0 %}trend-up{% else %}trend-down{% endif %}">
                             {{ analysis.macd }}
                         </p>
-                        <p class="text-gray-600 mt-3 font-semibold">Moving Average Convergence Divergence</p>
+                        <p class="text-xs md:text-base text-gray-600 mt-1 font-semibold">Moving Average Convergence Divergence</p>
                     </div>
-                    <div class="metric-card">
-                        <h3 class="text-2xl font-bold mb-4 text-purple-600">
+                    <div class="metric-card p-2 md:p-4">
+                        <h3 class="text-sm md:text-lg font-bold mb-1 md:mb-2 text-purple-600">
                             <i class="fas fa-chart-line mr-2"></i>SMA (20)
                         </h3>
-                        <p class="text-4xl font-bold text-gray-800">₹{{ analysis.sma_20 }}</p>
-                        <p class="text-gray-600 mt-3 font-semibold">20-Day Simple Moving Average</p>
+                        <p class="text-sm md:text-xl font-bold text-gray-800">₹{{ analysis.sma_20 }}</p>
+                        <p class="text-xs md:text-base text-gray-600 mt-1 font-semibold">20-Day Simple Moving Average</p>
                     </div>
-                    <div class="metric-card">
-                        <h3 class="text-2xl font-bold mb-4 text-purple-600">
+                    <div class="metric-card p-2 md:p-4">
+                        <h3 class="text-sm md:text-lg font-bold mb-1 md:mb-2 text-purple-600">
                             <i class="fas fa-chart-line mr-2"></i>SMA (50)
                         </h3>
-                        <p class="text-4xl font-bold text-gray-800">₹{{ analysis.sma_50 }}</p>
-                        <p class="text-gray-600 mt-3 font-semibold">50-Day Simple Moving Average</p>
+                        <p class="text-sm md:text-xl font-bold text-gray-800">₹{{ analysis.sma_50 }}</p>
+                        <p class="text-xs md:text-base text-gray-600 mt-1 font-semibold">50-Day Simple Moving Average</p>
                     </div>
                 </div>
             </div>
+
+            <!-- Enter symbol / Analyze Stock -->
+            <form action="/analyze" method="post" class="flex gap-2 md:gap-4 p-2 md:p-4">
+                <input type="text" name="symbol" placeholder="Enter stock symbol (e.g., RELIANCE, TCS)" 
+                       class="input-field text-sm md:text-base py-2 px-3 md:py-3 md:px-4"
+                       required>
+                <button type="submit" class="btn text-sm md:text-base py-2 px-3 md:py-3 md:px-4">
+                    <i class="fas fa-search mr-2 md:mr-3"></i>Analyze Stock
+                </button>
+            </form>
         </div>
     </div>
 </body>
