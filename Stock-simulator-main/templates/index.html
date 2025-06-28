@@ -202,8 +202,8 @@
         </div>
     </div>
     <div id="menu-overlay" class="hidden fixed inset-0 bg-black bg-opacity-30 z-40"></div>
-    <!-- Header: Balance, Logout (hidden on mobile) -->
-    <header class="w-full flex flex-col items-center justify-center mb-8 px-4 sm:hidden">
+    <!-- Header: Balance, Logout (hidden on mobile, visible on desktop) -->
+    <header class="w-full hidden sm:flex flex-col items-center justify-center mb-8 px-4">
         <div class="bg-green-500 text-white font-bold py-3 px-6 rounded-lg shadow-lg text-lg mt-3 sm:py-2 sm:px-4 sm:text-base">
             <i class="fas fa-wallet mr-2"></i>₹{{ "%.2f"|format(user.balance) }}
         </div>
