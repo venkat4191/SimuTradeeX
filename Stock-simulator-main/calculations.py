@@ -4,7 +4,6 @@ import numpy as np
 from textblob import TextBlob
 import requests
 from bs4 import BeautifulSoup
-import talib
 from datetime import datetime, timedelta
 import matplotlib.pyplot as plt
 import io
@@ -58,30 +57,118 @@ class StockCalculations:
             return pd.DataFrame()
 
     def calculate_rsi(self, prices, period=14):
-        """Calculate Relative Strength Index"""
+        """Calculate Relative Strength Index using pure Python"""
         try:
-            return talib.RSI(prices.values, timeperiod=period)
+            delta = prices.diff()
+            gain = (delta.where(delta > 0, 0)).rolling(window=period).mean()
+            loss = (-delta.where(delta < 0, 0)).rolling(window=period).mean()
+            rs = gain / loss
+            rsi = 100 - (100 / (1 + rs))
+            return rsi
         except Exception as e:
             print(f"Error calculating RSI: {e}")
-            return np.zeros(len(prices))
+            return pd.Series([0] * len(prices), index=prices.index)
 
-    def calculate_macd(self, prices):
-        """Calculate MACD"""
+    def calculate_macd(self, prices, fast=12, slow=26, signal=9):
+        """Calculate MACD using pure Python"""
         try:
-            macd, signal, hist = talib.MACD(prices.values)
-            return macd
+            ema_fast = prices.ewm(span=fast).mean()
+            ema_slow = prices.ewm(span=slow).mean()
+            macd = ema_fast - ema_slow
+            signal_line = macd.ewm(span=signal).mean()
+            histogram = macd - signal_line
+            return macd, signal_line, histogram
         except Exception as e:
             print(f"Error calculating MACD: {e}")
-            return np.zeros(len(prices))
+            zeros = pd.Series([0] * len(prices), index=prices.index)
+            return zeros, zeros, zeros
 
-    def calculate_bollinger_bands(self, prices, period=20):
-        """Calculate Bollinger Bands"""
+    def calculate_bollinger_bands(self, prices, period=20, std_dev=2):
+        """Calculate Bollinger Bands using pure Python"""
         try:
-            upper, middle, lower = talib.BBANDS(prices.values, timeperiod=period)
-            return upper, lower
+            sma = prices.rolling(window=period).mean()
+            std = prices.rolling(window=period).std()
+            upper_band = sma + (std * std_dev)
+            lower_band = sma - (std * std_dev)
+            return upper_band, sma, lower_band
         except Exception as e:
             print(f"Error calculating Bollinger Bands: {e}")
-            return np.zeros(len(prices)), np.zeros(len(prices))
+            zeros = pd.Series([0] * len(prices), index=prices.index)
+            return zeros, zeros, zeros
+
+    def calculate_sma(self, prices, period):
+        """Calculate Simple Moving Average"""
+        try:
+            return prices.rolling(window=period).mean()
+        except Exception as e:
+            print(f"Error calculating SMA: {e}")
+            return pd.Series([0] * len(prices), index=prices.index)
+
+    def calculate_atr(self, high, low, close, period=14):
+        """Calculate Average True Range"""
+        try:
+            tr1 = high - low
+            tr2 = abs(high - close.shift())
+            tr3 = abs(low - close.shift())
+            tr = pd.concat([tr1, tr2, tr3], axis=1).max(axis=1)
+            atr = tr.rolling(window=period).mean()
+            return atr
+        except Exception as e:
+            print(f"Error calculating ATR: {e}")
+            return pd.Series([0] * len(close), index=close.index)
+
+    def calculate_obv(self, close, volume):
+        """Calculate On Balance Volume"""
+        try:
+            obv = pd.Series(index=close.index, dtype=float)
+            obv.iloc[0] = volume.iloc[0]
+            
+            for i in range(1, len(close)):
+                if close.iloc[i] > close.iloc[i-1]:
+                    obv.iloc[i] = obv.iloc[i-1] + volume.iloc[i]
+                elif close.iloc[i] < close.iloc[i-1]:
+                    obv.iloc[i] = obv.iloc[i-1] - volume.iloc[i]
+                else:
+                    obv.iloc[i] = obv.iloc[i-1]
+            
+            return obv
+        except Exception as e:
+            print(f"Error calculating OBV: {e}")
+            return pd.Series([0] * len(close), index=close.index)
+
+    def calculate_adx(self, high, low, close, period=14):
+        """Calculate Average Directional Index"""
+        try:
+            # Calculate True Range
+            tr1 = high - low
+            tr2 = abs(high - close.shift())
+            tr3 = abs(low - close.shift())
+            tr = pd.concat([tr1, tr2, tr3], axis=1).max(axis=1)
+            
+            # Calculate Directional Movement
+            dm_plus = high - high.shift()
+            dm_minus = low.shift() - low
+            
+            dm_plus = dm_plus.where((dm_plus > dm_minus) & (dm_plus > 0), 0)
+            dm_minus = dm_minus.where((dm_minus > dm_plus) & (dm_minus > 0), 0)
+            
+            # Calculate smoothed values
+            tr_smooth = tr.rolling(window=period).mean()
+            dm_plus_smooth = dm_plus.rolling(window=period).mean()
+            dm_minus_smooth = dm_minus.rolling(window=period).mean()
+            
+            # Calculate DI+ and DI-
+            di_plus = 100 * (dm_plus_smooth / tr_smooth)
+            di_minus = 100 * (dm_minus_smooth / tr_smooth)
+            
+            # Calculate DX and ADX
+            dx = 100 * abs(di_plus - di_minus) / (di_plus + di_minus)
+            adx = dx.rolling(window=period).mean()
+            
+            return adx
+        except Exception as e:
+            print(f"Error calculating ADX: {e}")
+            return pd.Series([0] * len(close), index=close.index)
 
     def prepare_features(self, data):
         """Prepare features for prediction"""
@@ -94,8 +181,9 @@ class StockCalculations:
             
             # Calculate technical indicators
             data['RSI'] = self.calculate_rsi(data['Close'])
-            data['MACD'] = self.calculate_macd(data['Close'])
-            data['BB_Upper'], data['BB_Lower'] = self.calculate_bollinger_bands(data['Close'])
+            macd, signal, hist = self.calculate_macd(data['Close'])
+            data['MACD'] = macd
+            data['BB_Upper'], data['BB_Middle'], data['BB_Lower'] = self.calculate_bollinger_bands(data['Close'])
             
             # Create feature matrix
             features = pd.DataFrame({
@@ -132,30 +220,24 @@ class StockCalculations:
             # Make a copy to avoid modifying original data
             df = df.copy()
             
-            # Convert price data to float64 for TA-Lib
-            close = df['Close'].astype('float64').values
-            high = df['High'].astype('float64').values
-            low = df['Low'].astype('float64').values
-            volume = df['Volume'].astype('float64').values
-            
             # Price action indicators
-            df['SMA_20'] = talib.SMA(close, timeperiod=20)
-            df['SMA_50'] = talib.SMA(close, timeperiod=50)
-            df['SMA_200'] = talib.SMA(close, timeperiod=200)
+            df['SMA_20'] = self.calculate_sma(df['Close'], 20)
+            df['SMA_50'] = self.calculate_sma(df['Close'], 50)
+            df['SMA_200'] = self.calculate_sma(df['Close'], 200)
             
             # Momentum indicators
-            df['RSI'] = talib.RSI(close, timeperiod=14)
-            df['MACD'], df['MACD_Signal'], df['MACD_Hist'] = talib.MACD(close)
+            df['RSI'] = self.calculate_rsi(df['Close'])
+            df['MACD'], df['MACD_Signal'], df['MACD_Hist'] = self.calculate_macd(df['Close'])
             
             # Volatility indicators
-            df['BB_Upper'], df['BB_Middle'], df['BB_Lower'] = talib.BBANDS(close)
-            df['ATR'] = talib.ATR(high, low, close, timeperiod=14)
+            df['BB_Upper'], df['BB_Middle'], df['BB_Lower'] = self.calculate_bollinger_bands(df['Close'])
+            df['ATR'] = self.calculate_atr(df['High'], df['Low'], df['Close'])
             
             # Volume indicators
-            df['OBV'] = talib.OBV(close, volume)
+            df['OBV'] = self.calculate_obv(df['Close'], df['Volume'])
             
             # Trend indicators
-            df['ADX'] = talib.ADX(high, low, close, timeperiod=14)
+            df['ADX'] = self.calculate_adx(df['High'], df['Low'], df['Close'])
             
             # Fill NaN values with 0
             df = df.fillna(0)
