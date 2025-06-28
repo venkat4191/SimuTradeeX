@@ -24,9 +24,6 @@ seaborn>=0.12.2
 scikit-learn>=1.4.0
 textblob>=0.17.1
 
-# Technical Analysis (may need system dependencies)
-TA-Lib>=0.4.24
-
 # Natural Language Processing
 spacy>=3.7.0
 
