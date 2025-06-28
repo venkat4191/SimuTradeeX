@@ -194,25 +194,47 @@
         <div class="particle" style="left: 90%; top: 30%; width: 27px; height: 27px; animation-delay: 3s;"></div>
     </div>
     
+    <!-- Always-visible Heading and Hamburger -->
+    <div class="w-full flex flex-row items-center justify-center mt-0 mb-0 px-4 relative flex md:hidden">
+        <!-- Hamburger only on mobile, now at topmost left -->
+        <button id="menu-btn" class="block fixed top-2 left-2 z-50 text-white focus:outline-none md:hidden" aria-label="Open menu">
+            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+            </svg>
+        </button>
+        <h1 class="text-2xl font-extrabold text-white drop-shadow-lg text-center w-full mb-0 mt-0 flex items-center justify-center">
+            <i class="fas fa-robot mr-2 text-pink-400"></i>AI Stock Analysis
+        </h1>
+    </div>
+    <!-- Slide-out Menu -->
+    <div id="mobile-menu" class="block fixed top-0 left-0 w-3/4 max-w-xs h-full bg-white shadow-lg z-50 transform -translate-x-full transition-transform duration-300 md:hidden">
+        <div class="flex flex-col p-6 gap-6 mt-8">
+            <a href="/" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg shadow transition text-base flex items-center">
+                <i class="fas fa-home mr-2"></i>Back to Home
+            </a>
+            <button id="close-menu" class="mt-8 text-gray-700 font-bold">Close</button>
+        </div>
+    </div>
+    <div id="menu-overlay" class="hidden fixed inset-0 bg-black bg-opacity-30 z-40 md:hidden"></div>
     <div class="main-container">
         <div class="container mx-auto">
-            <!-- Header -->
-            <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-12">
-                <h1 class="text-6xl font-bold text-white drop-shadow-lg flex items-center mx-auto text-center w-full md:w-auto">
+            <!-- Header for desktop only -->
+            <div class="hidden md:flex flex-row items-center justify-between mb-12">
+                <h1 class="text-6xl font-bold text-white drop-shadow-lg flex items-center text-center w-full md:w-auto">
                     <i class="fas fa-robot mr-4 text-pink-400"></i>AI Stock Analysis
                 </h1>
-                <a href="/" class="inline-flex items-center mt-6 md:mt-0 px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white font-bold rounded-lg shadow transition text-lg md:ml-8"><i class="fas fa-home mr-2"></i>Back to Home</a>
+                <a href="/" class="inline-flex items-center px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white font-bold rounded-lg shadow transition text-lg md:ml-8"><i class="fas fa-home mr-2"></i>Back to Home</a>
             </div>
-            <p class="text-2xl text-white drop-shadow-md opacity-90 text-center mb-12">Advanced market analysis powered by machine learning and technical indicators</p>
+            <p class="text-lg md:text-2xl text-white drop-shadow-md opacity-90 text-center mb-12">Advanced market analysis powered by machine learning and technical indicators</p>
 
             <!-- Search Form -->
-            <div class="max-w-3xl mx-auto mb-12">
-                <form action="/analyze" method="post" class="flex gap-4">
+            <div class="max-w-3xl mx-auto mb-8">
+                <form action="/analyze" method="post" class="flex gap-2 md:gap-4 p-2 md:p-4">
                     <input type="text" name="symbol" placeholder="Enter stock symbol (e.g., RELIANCE, TCS)" 
-                           class="input-field text-lg"
+                           class="input-field text-sm md:text-base py-2 px-3 md:py-3 md:px-4"
                            required>
-                    <button type="submit" class="btn text-lg">
-                        <i class="fas fa-search mr-3"></i>Analyze Stock
+                    <button type="submit" class="btn text-sm md:text-base py-2 px-3 md:py-3 md:px-4">
+                        <i class="fas fa-search mr-2 md:mr-3"></i>Analyze Stock
                     </button>
                 </form>
             </div>
@@ -221,48 +243,48 @@
                 <!-- Analysis Results -->
                 <div class="space-y-10">
                     <!-- Price Prediction -->
-                    <div class="card p-10">
-                        <h2 class="text-4xl font-bold mb-8 text-center text-gray-800">
+                    <div class="card p-4 md:p-8">
+                        <h2 class="text-base md:text-2xl font-bold mb-2 md:mb-4 text-center text-gray-800">
                             <i class="fas fa-chart-line mr-4 text-pink-500"></i>Price Analysis
                         </h2>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-4">
                             <div>
                                 <div class="mb-6">
-                                    <p class="text-xl font-bold text-gray-600 mb-2">Current Price</p>
-                                    <p class="text-5xl font-bold text-gray-800">₹{{ prediction.current_price }}</p>
+                                    <p class="text-sm md:text-lg font-bold text-gray-600 mb-1">Current Price</p>
+                                    <p class="text-base md:text-xl font-bold text-gray-800">₹{{ prediction.current_price }}</p>
                                 </div>
                                 <div class="mb-6">
-                                    <p class="text-xl font-bold text-gray-600 mb-2">5-Month Predicted Price</p>
-                                    <p class="text-5xl font-bold {% if prediction.future_prices and prediction.future_prices[-1] > prediction.current_price %}price-change-positive{% else %}price-change-negative{% endif %}">
+                                    <p class="text-sm md:text-lg font-bold text-gray-600 mb-1">5-Month Predicted Price</p>
+                                    <p class="text-base md:text-xl font-bold {% if prediction.future_prices and prediction.future_prices[-1] > prediction.current_price %}price-change-positive{% else %}price-change-negative{% endif %}">
                                         ₹{{ prediction.future_prices[-1] if prediction.future_prices else 'N/A' }}
                                     </p>
                                     {% if prediction.future_prices %}
-                                    <p class="text-lg text-gray-600 mt-3">
+                                    <p class="text-xs md:text-base text-gray-600 mt-1">
                                         {% set change = ((prediction.future_prices[-1] - prediction.current_price) / prediction.current_price * 100) | round(2) %}
                                         {% if change > 0 %}+{% endif %}{{ change }}% change
                                     </p>
                                     {% endif %}
                                 </div>
                                 <div>
-                                    <p class="text-xl font-bold text-gray-600 mb-3">Prediction Confidence</p>
+                                    <p class="text-sm md:text-lg font-bold text-gray-600 mb-1">Prediction Confidence</p>
                                     <div class="flex items-center gap-4">
                                         <div class="flex-1 h-3 bg-gray-200 rounded-full overflow-hidden">
                                             <div class="confidence-bar" style="width: {{ prediction.confidence }}%"></div>
                                         </div>
-                                        <span class="text-xl font-bold text-gray-800">{{ prediction.confidence }}%</span>
+                                        <span class="text-base md:text-xl font-bold text-gray-800">{{ prediction.confidence }}%</span>
                                     </div>
                                 </div>
                             </div>
                             <div>
                                 <div class="mb-6">
-                                    <p class="text-xl font-bold text-gray-600 mb-2">Market Regime</p>
-                                    <p class="text-3xl font-bold {% if prediction.market_regime == 'Bullish' %}text-green-600{% elif prediction.market_regime == 'Bearish' %}text-red-600{% else %}text-blue-600{% endif %}">
+                                    <p class="text-sm md:text-lg font-bold text-gray-600 mb-1">Market Regime</p>
+                                    <p class="text-base md:text-xl font-bold {% if prediction.market_regime == 'Bullish' %}text-green-600{% elif prediction.market_regime == 'Bearish' %}text-red-600{% else %}text-blue-600{% endif %}">
                                         {{ prediction.market_regime }}
                                     </p>
                                 </div>
                                 <div class="mb-6">
-                                    <p class="text-xl font-bold text-gray-600 mb-2">Sentiment Score</p>
-                                    <p class="text-3xl font-bold {% if prediction.sentiment_score > 0 %}sentiment-positive{% elif prediction.sentiment_score < 0 %}sentiment-negative{% else %}sentiment-neutral{% endif %}">
+                                    <p class="text-sm md:text-lg font-bold text-gray-600 mb-1">Sentiment Score</p>
+                                    <p class="text-base md:text-xl font-bold {% if prediction.sentiment_score > 0 %}sentiment-positive{% elif prediction.sentiment_score < 0 %}sentiment-negative{% else %}sentiment-neutral{% endif %}">
                                         {{ prediction.sentiment_score }}
                                     </p>
                                 </div>
@@ -272,104 +294,96 @@
 
                     <!-- Future Price Prediction -->
                     {% if prediction.future_prediction_graph %}
-                    <div class="card p-10">
-                        <h2 class="text-4xl font-bold mb-8 text-center text-gray-800">
+                    <div class="card p-4 md:p-8">
+                        <h2 class="text-base md:text-2xl font-bold mb-2 md:mb-4 text-center text-gray-800">
                             <i class="fas fa-chart-area mr-4 text-green-500"></i>5-Month Price Prediction
                         </h2>
-                        <div class="aspect-w-16 aspect-h-9">
+                        <div class="aspect-w-16 aspect-h-12 mb-2 md:mb-4">
                             <img src="data:image/png;base64,{{ prediction.future_prediction_graph }}" 
                                  alt="Future Price Prediction" class="w-full h-full object-contain rounded-2xl">
-                        </div>
-                        <div class="mt-6 text-gray-600 text-lg">
-                            <p class="mb-3 font-bold">The graph shows:</p>
-                            <ul class="list-disc list-inside space-y-2">
-                                <li>Historical prices (blue line)</li>
-                                <li>Predicted prices for the next 5 months (green dashed line)</li>
-                                <li>Confidence interval (light green shaded area)</li>
-                            </ul>
                         </div>
                     </div>
                     {% endif %}
 
                     <!-- Market Analysis -->
                     {% if prediction.market_analysis %}
-                    <div class="card p-10">
-                        <h2 class="text-4xl font-bold mb-8 text-center text-gray-800">
+                    <div class="card p-4 md:p-8">
+                        <h2 class="text-base md:text-2xl font-bold mb-2 md:mb-4 text-center text-gray-800">
                             <i class="fas fa-chart-bar mr-4 text-blue-500"></i>Market Analysis
                         </h2>
-                        <div class="analysis-grid">
+                        <div class="analysis-grid gap-2 md:gap-4">
                             <!-- Trend Analysis -->
-                            <div class="metric-card">
-                                <h3 class="text-2xl font-bold mb-4 text-blue-600">
+                            <div class="metric-card p-2 md:p-4">
+                                <h3 class="text-sm md:text-lg font-bold mb-1 md:mb-2 text-blue-600">
                                     <i class="fas fa-trending-up mr-2"></i>Trend Analysis
                                 </h3>
-                                <div class="space-y-3">
-                                    <p class="text-gray-600 font-semibold">Current Trend</p>
-                                    <p class="text-2xl font-bold {% if 'Uptrend' in prediction.market_analysis.trend.trend %}text-green-600{% elif 'Downtrend' in prediction.market_analysis.trend.trend %}text-red-600{% else %}text-blue-600{% endif %}">
+                                <div class="space-y-1 md:space-y-2">
+                                    <p class="text-xs md:text-sm text-gray-600 font-semibold">Current Trend</p>
+                                    <p class="text-base md:text-xl font-bold {% if 'Uptrend' in prediction.market_analysis.trend.trend %}text-green-600{% elif 'Downtrend' in prediction.market_analysis.trend.trend %}text-red-600{% else %}text-blue-600{% endif %}">
                                         {{ prediction.market_analysis.trend.trend }}
                                     </p>
-                                    <p class="text-gray-600">20-day MA: ₹{{ prediction.market_analysis.trend.ma20 }}</p>
-                                    <p class="text-gray-600">50-day MA: ₹{{ prediction.market_analysis.trend.ma50 }}</p>
+                                    <p class="text-xs md:text-base text-gray-600">20-day MA: ₹{{ prediction.market_analysis.trend.ma20 }}</p>
+                                    <p class="text-xs md:text-base text-gray-600">50-day MA: ₹{{ prediction.market_analysis.trend.ma50 }}</p>
                                 </div>
                             </div>
 
                             <!-- Support & Resistance -->
-                            <div class="metric-card">
-                                <h3 class="text-2xl font-bold mb-4 text-blue-600">
+                            <div class="metric-card p-2 md:p-4">
+                                <h3 class="text-sm md:text-lg font-bold mb-1 md:mb-2 text-blue-600">
                                     <i class="fas fa-shield-alt mr-2"></i>Support & Resistance
                                 </h3>
-                                <div class="space-y-3">
-                                    <p class="text-gray-600 font-semibold">Support Level</p>
-                                    <p class="text-2xl font-bold text-gray-800">₹{{ prediction.market_analysis.support_resistance.support }}</p>
-                                    <p class="text-gray-600 font-semibold">Resistance Level</p>
-                                    <p class="text-2xl font-bold text-gray-800">₹{{ prediction.market_analysis.support_resistance.resistance }}</p>
-                                    <p class="text-gray-600 font-semibold">Price Range</p>
-                                    <p class="text-2xl font-bold text-gray-800">₹{{ prediction.market_analysis.support_resistance.range }}</p>
+                                <div class="space-y-1 md:space-y-2">
+                                    <p class="text-xs md:text-sm text-gray-600 font-semibold">Support Level</p>
+                                    <p class="text-base md:text-xl font-bold text-gray-800">₹{{ prediction.market_analysis.support_resistance.support }}</p>
+                                    <p class="text-xs md:text-sm text-gray-600 font-semibold">Resistance Level</p>
+                                    <p class="text-base md:text-xl font-bold text-gray-800">₹{{ prediction.market_analysis.support_resistance.resistance }}</p>
+                                    <p class="text-xs md:text-sm text-gray-600 font-semibold">Price Range</p>
+                                    <p class="text-base md:text-xl font-bold text-gray-800">₹{{ prediction.market_analysis.support_resistance.range }}</p>
                                 </div>
                             </div>
 
                             <!-- Volatility -->
-                            <div class="metric-card">
-                                <h3 class="text-2xl font-bold mb-4 text-blue-600">
+                            <div class="metric-card p-2 md:p-4">
+                                <h3 class="text-sm md:text-lg font-bold mb-1 md:mb-2 text-blue-600">
                                     <i class="fas fa-chart-line mr-2"></i>Volatility
                                 </h3>
-                                <div class="space-y-3">
-                                    <p class="text-gray-600 font-semibold">Daily Volatility</p>
-                                    <p class="text-2xl font-bold text-gray-800">{{ prediction.market_analysis.volatility.daily_volatility }}%</p>
-                                    <p class="text-gray-600 font-semibold">Annualized Volatility</p>
-                                    <p class="text-2xl font-bold text-gray-800">{{ prediction.market_analysis.volatility.annualized_volatility }}%</p>
+                                <div class="space-y-1 md:space-y-2">
+                                    <p class="text-xs md:text-sm text-gray-600 font-semibold">Daily Volatility</p>
+                                    <p class="text-base md:text-xl font-bold text-gray-800">{{ prediction.market_analysis.volatility.daily_volatility }}%</p>
+                                    <p class="text-xs md:text-sm text-gray-600 font-semibold">Annualized Volatility</p>
+                                    <p class="text-base md:text-xl font-bold text-gray-800">{{ prediction.market_analysis.volatility.annualized_volatility }}%</p>
                                 </div>
                             </div>
 
                             <!-- Volume Analysis -->
-                            <div class="metric-card">
-                                <h3 class="text-2xl font-bold mb-4 text-blue-600">
+                            <div class="metric-card p-2 md:p-4">
+                                <h3 class="text-sm md:text-lg font-bold mb-1 md:mb-2 text-blue-600">
                                     <i class="fas fa-volume-up mr-2"></i>Volume Analysis
                                 </h3>
-                                <div class="space-y-3">
-                                    <p class="text-gray-600 font-semibold">Average Volume</p>
-                                    <p class="text-2xl font-bold text-gray-800">{{ prediction.market_analysis.volume_analysis.average_volume }}</p>
-                                    <p class="text-gray-600 font-semibold">Recent Volume</p>
-                                    <p class="text-2xl font-bold text-gray-800">{{ prediction.market_analysis.volume_analysis.recent_volume }}</p>
-                                    <p class="text-gray-600 font-semibold">Volume Trend</p>
-                                    <p class="text-2xl font-bold {% if prediction.market_analysis.volume_analysis.volume_trend == 'Increasing' %}text-green-600{% else %}text-red-600{% endif %}">
+                                <div class="space-y-1 md:space-y-2">
+                                    <p class="text-xs md:text-sm text-gray-600 font-semibold">Average Volume</p>
+                                    <p class="text-base md:text-xl font-bold text-gray-800">{{ prediction.market_analysis.volume_analysis.average_volume }}</p>
+                                    <p class="text-xs md:text-sm text-gray-600 font-semibold">Recent Volume</p>
+                                    <p class="text-base md:text-xl font-bold text-gray-800">{{ prediction.market_analysis.volume_analysis.recent_volume }}</p>
+                                    <p class="text-xs md:text-sm text-gray-600 font-semibold">Volume Trend</p>
+                                    <p class="text-base md:text-xl font-bold {% if prediction.market_analysis.volume_analysis.volume_trend == 'Increasing' %}text-green-600{% else %}text-red-600{% endif %}">
                                         {{ prediction.market_analysis.volume_analysis.volume_trend }}
                                     </p>
                                 </div>
                             </div>
 
                             <!-- Momentum -->
-                            <div class="metric-card">
-                                <h3 class="text-2xl font-bold mb-4 text-blue-600">
+                            <div class="metric-card p-2 md:p-4">
+                                <h3 class="text-sm md:text-lg font-bold mb-1 md:mb-2 text-blue-600">
                                     <i class="fas fa-rocket mr-2"></i>Momentum
                                 </h3>
-                                <div class="space-y-3">
-                                    <p class="text-gray-600 font-semibold">Rate of Change</p>
-                                    <p class="text-2xl font-bold {% if prediction.market_analysis.momentum.rate_of_change > 0 %}text-green-600{% elif prediction.market_analysis.momentum.rate_of_change < 0 %}text-red-600{% else %}text-blue-600{% endif %}">
+                                <div class="space-y-1 md:space-y-2">
+                                    <p class="text-xs md:text-sm text-gray-600 font-semibold">Rate of Change</p>
+                                    <p class="text-base md:text-xl font-bold {% if prediction.market_analysis.momentum.rate_of_change > 0 %}text-green-600{% elif prediction.market_analysis.momentum.rate_of_change < 0 %}text-red-600{% else %}text-blue-600{% endif %}">
                                         {{ prediction.market_analysis.momentum.rate_of_change }}%
                                     </p>
-                                    <p class="text-gray-600 font-semibold">Momentum</p>
-                                    <p class="text-2xl font-bold {% if prediction.market_analysis.momentum.momentum > 0 %}text-green-600{% elif prediction.market_analysis.momentum.momentum < 0 %}text-red-600{% else %}text-blue-600{% endif %}">
+                                    <p class="text-xs md:text-sm text-gray-600 font-semibold">Momentum</p>
+                                    <p class="text-base md:text-xl font-bold {% if prediction.market_analysis.momentum.momentum > 0 %}text-green-600{% elif prediction.market_analysis.momentum.momentum < 0 %}text-red-600{% else %}text-blue-600{% endif %}">
                                         ₹{{ prediction.market_analysis.momentum.momentum }}
                                     </p>
                                 </div>
@@ -379,38 +393,38 @@
                     {% endif %}
 
                     <!-- Technical Indicators -->
-                    <div class="card p-10">
-                        <h2 class="text-4xl font-bold mb-8 text-center text-gray-800">
+                    <div class="card p-4 md:p-8">
+                        <h2 class="text-base md:text-2xl font-bold mb-2 md:mb-4 text-center text-gray-800">
                             <i class="fas fa-cogs mr-4 text-purple-500"></i>Technical Indicators
                         </h2>
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                            <div class="metric-card">
-                                <h3 class="text-2xl font-bold mb-4 text-purple-600">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-2 md:gap-4">
+                            <div class="metric-card p-2 md:p-4">
+                                <h3 class="text-sm md:text-lg font-bold mb-1 md:mb-2 text-purple-600">
                                     <i class="fas fa-chart-line mr-2"></i>RSI
                                 </h3>
-                                <p class="text-4xl font-bold {% if prediction.technical_indicators.rsi > 70 %}text-red-600{% elif prediction.technical_indicators.rsi < 30 %}text-green-600{% else %}text-blue-600{% endif %}">
+                                <p class="text-base md:text-xl font-bold {% if prediction.technical_indicators.rsi > 70 %}text-red-600{% elif prediction.technical_indicators.rsi < 30 %}text-green-600{% else %}text-blue-600{% endif %}">
                                     {{ prediction.technical_indicators.rsi }}
                                 </p>
-                                <p class="text-gray-600 mt-3 font-semibold">Relative Strength Index</p>
+                                <p class="text-xs md:text-base text-gray-600 mt-1 font-semibold">Relative Strength Index</p>
                             </div>
-                            <div class="metric-card">
-                                <h3 class="text-2xl font-bold mb-4 text-purple-600">
+                            <div class="metric-card p-2 md:p-4">
+                                <h3 class="text-sm md:text-lg font-bold mb-1 md:mb-2 text-purple-600">
                                     <i class="fas fa-chart-area mr-2"></i>MACD
                                 </h3>
-                                <p class="text-4xl font-bold {% if prediction.technical_indicators.macd > 0 %}text-green-600{% else %}text-red-600{% endif %}">
+                                <p class="text-base md:text-xl font-bold {% if prediction.technical_indicators.macd > 0 %}text-green-600{% else %}text-red-600{% endif %}">
                                     {{ prediction.technical_indicators.macd }}
                                 </p>
-                                <p class="text-gray-600 mt-3 font-semibold">Moving Average Convergence Divergence</p>
+                                <p class="text-xs md:text-base text-gray-600 mt-1 font-semibold">Moving Average Convergence Divergence</p>
                             </div>
-                            <div class="metric-card">
-                                <h3 class="text-2xl font-bold mb-4 text-purple-600">
+                            <div class="metric-card p-2 md:p-4">
+                                <h3 class="text-sm md:text-lg font-bold mb-1 md:mb-2 text-purple-600">
                                     <i class="fas fa-chart-bar mr-2"></i>Bollinger Bands
                                 </h3>
-                                <div class="space-y-3">
-                                    <p class="text-gray-600 font-semibold">Upper Band</p>
-                                    <p class="text-2xl font-bold text-gray-800">₹{{ prediction.technical_indicators.bollinger_bands.upper }}</p>
-                                    <p class="text-gray-600 font-semibold">Lower Band</p>
-                                    <p class="text-2xl font-bold text-gray-800">₹{{ prediction.technical_indicators.bollinger_bands.lower }}</p>
+                                <div class="space-y-1 md:space-y-2">
+                                    <p class="text-xs md:text-sm text-gray-600 font-semibold">Upper Band</p>
+                                    <p class="text-base md:text-xl font-bold text-gray-800">₹{{ prediction.technical_indicators.bollinger_bands.upper }}</p>
+                                    <p class="text-xs md:text-sm text-gray-600 font-semibold">Lower Band</p>
+                                    <p class="text-base md:text-xl font-bold text-gray-800">₹{{ prediction.technical_indicators.bollinger_bands.lower }}</p>
                                 </div>
                             </div>
                         </div>
@@ -418,22 +432,13 @@
 
                     <!-- Technical Analysis Graphs -->
                     {% if prediction.analysis_graph %}
-                    <div class="card p-10">
-                        <h2 class="text-4xl font-bold mb-8 text-center text-gray-800">
+                    <div class="card p-4 md:p-8">
+                        <h2 class="text-base md:text-2xl font-bold mb-2 md:mb-4 text-center text-gray-800">
                             <i class="fas fa-chart-pie mr-4 text-indigo-500"></i>Technical Analysis Charts
                         </h2>
-                        <div class="aspect-w-16 aspect-h-9">
+                        <div class="aspect-w-16 aspect-h-12 mb-2 md:mb-4">
                             <img src="data:image/png;base64,{{ prediction.analysis_graph }}" 
                                  alt="Technical Analysis" class="w-full h-full object-contain rounded-2xl">
-                        </div>
-                        <div class="mt-6 text-gray-600 text-lg">
-                            <p class="mb-3 font-bold">The charts show:</p>
-                            <ul class="list-disc list-inside space-y-2">
-                                <li>Price and Moving Averages (20-day and 50-day)</li>
-                                <li>Relative Strength Index (RSI) with overbought/oversold levels</li>
-                                <li>Moving Average Convergence Divergence (MACD)</li>
-                                <li>Bollinger Bands with price action</li>
-                            </ul>
                         </div>
                     </div>
                     {% endif %}
@@ -441,5 +446,24 @@
             {% endif %}
         </div>
     </div>
+    <script>
+        // Hamburger menu toggle (copied from index.html)
+        const menuBtn = document.getElementById('menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const closeMenu = document.getElementById('close-menu');
+        const menuOverlay = document.getElementById('menu-overlay');
+        menuBtn && menuBtn.addEventListener('click', () => {
+            mobileMenu.classList.remove('-translate-x-full');
+            menuOverlay.classList.remove('hidden');
+        });
+        closeMenu && closeMenu.addEventListener('click', () => {
+            mobileMenu.classList.add('-translate-x-full');
+            menuOverlay.classList.add('hidden');
+        });
+        menuOverlay && menuOverlay.addEventListener('click', () => {
+            mobileMenu.classList.add('-translate-x-full');
+            menuOverlay.classList.add('hidden');
+        });
+    </script>
 </body>
 </html> 
