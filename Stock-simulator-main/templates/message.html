@@ -89,6 +89,21 @@
             justify-content: flex-start;
             padding: 30px;
         }
+        .input-field {
+            background: rgba(255, 255, 255, 0.9);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 15px;
+            padding: 15px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+        .input-field:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 20px rgba(102, 126, 234, 0.3);
+            transform: scale(1.02);
+        }
     </style>
 </head>
 <body>
@@ -101,32 +116,74 @@
     </div>
     
     <div class="main-container">
-        <div class="container mx-auto">
-            <!-- Header -->
-            <div class="flex justify-between items-center mb-10 mt-8">
-                <h1 class="text-6xl font-bold text-white drop-shadow-lg">
+        <div class="container mx-auto flex flex-col justify-center items-center">
+            <!-- Always-visible Heading and Hamburger -->
+            <div class="w-full flex flex-row items-center justify-center mt-0 mb-0 px-4 relative flex md:hidden">
+                <!-- Hamburger only on mobile, now at topmost left -->
+                <button id="menu-btn" class="block fixed top-2 left-2 z-50 text-white focus:outline-none md:hidden" aria-label="Open menu">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+                <h1 class="text-4xl md:text-5xl font-extrabold text-white drop-shadow-lg text-center w-full mb-0 mt-0 flex items-center justify-center">
+                    <i class="fas fa-envelope mr-2 text-blue-400"></i>Message
+                </h1>
+            </div>
+            <!-- Slide-out Menu -->
+            <div id="mobile-menu" class="block fixed top-0 left-0 w-3/4 max-w-xs h-full bg-white shadow-lg z-50 transform -translate-x-full transition-transform duration-300 md:hidden">
+                <div class="flex flex-col p-6 gap-6 mt-8">
+                    <a href="/" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg shadow transition text-base flex items-center">
+                        <i class="fas fa-home mr-2"></i>Back to Home
+                    </a>
+                    <button id="close-menu" class="mt-8 text-gray-700 font-bold">Close</button>
+                </div>
+            </div>
+            <div id="menu-overlay" class="hidden fixed inset-0 bg-black bg-opacity-30 z-40 md:hidden"></div>
+            <!-- Header for desktop only -->
+            <div class="hidden md:flex flex-row items-center justify-center mb-10 mt-8">
+                <h1 class="text-5xl font-extrabold text-white drop-shadow-lg text-center">
                     <i class="fas fa-envelope mr-4 text-blue-400"></i>Message
                 </h1>
-                <a href="/" class="btn text-lg">
-                    <i class="fas fa-home mr-3"></i>Back to Home
-                </a>
             </div>
 
             <!-- Message Card -->
-            <div class="card p-10 max-w-3xl mx-auto">
+            <div class="card p-4 md:p-10 max-w-4xl mx-auto mt-16 md:mt-0">
                 <div class="text-center">
                     {% if success %}
-                    <i class="fas fa-check-circle text-8xl text-green-500 mb-6 drop-shadow-lg"></i>
+                    <i class="fas fa-check-circle text-6xl md:text-8xl text-green-500 mb-4 md:mb-6 drop-shadow-lg"></i>
                     {% else %}
-                    <i class="fas fa-exclamation-circle text-8xl text-red-500 mb-6 drop-shadow-lg"></i>
+                    <i class="fas fa-exclamation-circle text-6xl md:text-8xl text-red-500 mb-4 md:mb-6 drop-shadow-lg"></i>
                     {% endif %}
-                    <h2 class="text-4xl font-bold mb-6 text-gray-800">{{ message }}</h2>
-                    <a href="{{ url_for('index') }}" class="btn text-lg inline-block">
-                        <i class="fas fa-arrow-left mr-3"></i>Return to Home
+                    <h2 class="text-lg md:text-4xl font-bold mb-4 md:mb-6 text-gray-800 px-2">{{ message }}</h2>
+                    <a href="{{ url_for('index') }}" class="btn text-xs md:text-lg py-2 md:py-4 inline-block">
+                        <i class="fas fa-arrow-left mr-1 md:mr-3"></i>Return to Home
                     </a>
                 </div>
             </div>
         </div>
     </div>
+    <script>
+        // Hamburger menu toggle
+        const menuBtn = document.getElementById('menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const closeMenu = document.getElementById('close-menu');
+        const menuOverlay = document.getElementById('menu-overlay');
+        
+        menuBtn && menuBtn.addEventListener('click', () => {
+            mobileMenu.classList.remove('-translate-x-full');
+            menuOverlay.classList.remove('hidden');
+        });
+        
+        closeMenu && closeMenu.addEventListener('click', () => {
+            mobileMenu.classList.add('-translate-x-full');
+            menuOverlay.classList.add('hidden');
+        });
+        
+        menuOverlay && menuOverlay.addEventListener('click', () => {
+            mobileMenu.classList.add('-translate-x-full');
+            menuOverlay.classList.add('hidden');
+        });
+    </script>
 </body>
 </html>
+
