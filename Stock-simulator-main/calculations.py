@@ -563,15 +563,19 @@ class StockCalculations:
                 # Give more weight to recent sentiments
                 weights = np.linspace(1, 0.5, len(all_sentiments))
                 weighted_sentiment = np.average(all_sentiments, weights=weights)
-                return weighted_sentiment
+                return float(weighted_sentiment)
             
             # If no news sentiment available, calculate sentiment based on technical indicators
             try:
                 stock_data = self.get_stock_data(symbol)
                 if not stock_data.empty:
                     # Calculate technical sentiment
-                    rsi = self.calculate_rsi(stock_data['Close'])[-1]
-                    macd = self.calculate_macd(stock_data['Close'])[-1]
+                    rsi_series = self.calculate_rsi(stock_data['Close'])
+                    macd_series, _, _ = self.calculate_macd(stock_data['Close'])
+                    
+                    # Get the last valid values
+                    rsi = float(rsi_series.dropna().iloc[-1]) if not rsi_series.dropna().empty else 50
+                    macd = float(macd_series.dropna().iloc[-1]) if not macd_series.dropna().empty else 0
                     
                     # Normalize RSI to -1 to 1 range
                     rsi_sentiment = (rsi - 50) / 50
@@ -586,14 +590,14 @@ class StockCalculations:
                     technical_sentiment += np.random.normal(0, 0.1)
                     
                     # Ensure final sentiment is between -1 and 1
-                    return np.clip(technical_sentiment, -1, 1)
+                    return float(np.clip(technical_sentiment, -1, 1))
             except Exception as e:
                 print(f"Error calculating technical sentiment: {e}")
             
             # If all else fails, return a random sentiment between -0.5 and 0.5
-            return np.random.uniform(-0.5, 0.5)
+            return float(np.random.uniform(-0.5, 0.5))
             
         except Exception as e:
             print(f"Error in sentiment analysis: {e}")
             # Return a random sentiment between -0.5 and 0.5 on error
-            return np.random.uniform(-0.5, 0.5) 
+            return float(np.random.uniform(-0.5, 0.5)) 
