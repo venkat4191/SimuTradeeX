@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -119,11 +120,25 @@
             justify-content: center;
             transition: all 0.3s ease;
         }
+        @media (max-width: 768px) {
+            .equal-aspect-form {
+                min-width: 300px;
+                max-width: 90vw;
+                width: 90vw;
+            }
+        }
         .equal-aspect-form.expanded {
             aspect-ratio: auto;
             min-height: 900px;
             max-height: 1200px;
             height: auto;
+        }
+        @media (max-width: 768px) {
+            .equal-aspect-form.expanded {
+                min-width: 300px;
+                max-width: 90vw;
+                width: 90vw;
+            }
         }
     </style>
 </head>
@@ -137,7 +152,7 @@
     </div>
     
     <div class="main-container">
-        <div class="container mx-auto flex flex-col justify-center items-center">
+        <div class="container mx-auto flex flex-col justify-center items-center px-4 md:px-0">
             <!-- Always-visible Heading and Hamburger -->
             <div class="w-full flex flex-row items-center justify-center mt-0 mb-0 px-4 relative flex md:hidden">
                 <!-- Hamburger only on mobile, now at topmost left -->
@@ -168,7 +183,7 @@
             </div>
 
             <!-- Sell Form -->
-            <div class="card equal-aspect-form p-2 md:p-10 mx-auto mt-16 md:mt-0">
+            <div class="card equal-aspect-form p-2 md:p-10 mx-auto mt-16 md:mt-0 w-full max-w-md md:max-w-none">
                 <h2 class="text-lg md:text-4xl font-bold mb-2 md:mb-8 text-center text-gray-800">
                     <i class="fas fa-sell mr-2 md:mr-4 text-red-500"></i>Sell Stock
                 </h2>
@@ -177,7 +192,7 @@
                         <label for="symbol" class="block text-xs md:text-xl font-bold mb-1 md:mb-3 text-gray-700">Stock Symbol</label>
                         <input type="text" id="symbol" name="symbol" required 
                                class="input-field w-full text-xs md:text-lg p-2 md:p-4" 
-                               placeholder="Enter stock symbol (e.g., TCS)">
+                               placeholder="Enter stock symbol (e.g., RELIANCE)">
                     </div>
                     
                     <div>
@@ -365,4 +380,3 @@
     </script>
 </body>
 </html>
-
