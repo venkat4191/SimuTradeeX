@@ -146,8 +146,19 @@
                 min-width: 250px;
                 max-width: 80vw;
                 width: 80vw;
-                min-height: 500px;
-                max-height: 85vh;
+                min-height: 600px;
+                max-height: 90vh;
+            }
+            .btn {
+                padding: 8px 16px;
+                font-size: 12px;
+            }
+            #confirmation-buttons {
+                gap: 8px;
+            }
+            #confirmation-buttons .btn {
+                padding: 6px 12px;
+                font-size: 11px;
             }
         }
     </style>
@@ -274,6 +285,9 @@
         </div>
     </div>
     <script>
+        // Pass user balance from Flask to JavaScript
+        window.currentUserBalance = {% if current_user.is_authenticated %}{{ current_user.balance }}{% else %}0{% endif %};
+        
         // Hamburger menu toggle (copied from portfolio.html)
         const menuBtn = document.getElementById('menu-btn');
         const mobileMenu = document.getElementById('mobile-menu');
@@ -379,12 +393,7 @@
             document.querySelector('.equal-aspect-form').classList.remove('expanded');
         });
     </script>
-    <script>
-        // Pass user balance from Flask to JavaScript
-        window.currentUserBalance = {% if user_balance is defined %}{{ user_balance }}{% else %}0{% endif %};
-    </script>
 </body>
 </html>
-
 
 
