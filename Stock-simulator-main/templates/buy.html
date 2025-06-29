@@ -121,9 +121,18 @@
         }
         @media (max-width: 768px) {
             .equal-aspect-form {
-                min-width: 300px;
-                max-width: 90vw;
-                width: 90vw;
+                min-width: 250px;
+                max-width: 80vw;
+                width: 80vw;
+                min-height: 250px;
+                max-height: 80vw;
+            }
+            .main-container {
+                padding: 10px;
+                padding-top: 80px;
+            }
+            .card {
+                padding: 0.75rem !important;
             }
         }
         .equal-aspect-form.expanded {
@@ -134,9 +143,11 @@
         }
         @media (max-width: 768px) {
             .equal-aspect-form.expanded {
-                min-width: 300px;
-                max-width: 90vw;
-                width: 90vw;
+                min-width: 250px;
+                max-width: 80vw;
+                width: 80vw;
+                min-height: 500px;
+                max-height: 85vh;
             }
         }
     </style>
@@ -367,13 +378,13 @@
             // Return form to square shape
             document.querySelector('.equal-aspect-form').classList.remove('expanded');
         });
-        
-        // Get current user balance (you'll need to pass this from Flask)
-        const currentUserBalance = {{ current_user.balance if current_user.is_authenticated else 0 }};
+    </script>
+    <script>
+        // Pass user balance from Flask to JavaScript
+        window.currentUserBalance = {% if user_balance is defined %}{{ user_balance }}{% else %}0{% endif %};
     </script>
 </body>
 </html>
-
 
 
 
