@@ -290,8 +290,13 @@
         </div>
     </div>
     <script>
-        // Pass user balance from Flask to JavaScript
+        // Pass user balance from Flask to JavaScript - convert to regular number
         window.currentUserBalance = {% if current_user.is_authenticated %}{{ current_user.balance|float }}{% else %}0{% endif %};
+        
+        // Ensure it's a proper number
+        if (typeof window.currentUserBalance === 'string') {
+            window.currentUserBalance = parseFloat(window.currentUserBalance);
+        }
         
         // Hamburger menu toggle (copied from portfolio.html)
         const menuBtn = document.getElementById('menu-btn');
@@ -359,14 +364,16 @@
                     document.getElementById('confirm-shares').value = shares;
                     
                     // Check affordability
-                    const canAfford = currentUserBalance && totalCost <= currentUserBalance;
+                    const userBalance = parseFloat(currentUserBalance) || 0;
+                    const cost = parseFloat(totalCost) || 0;
+                    const canAfford = userBalance >= cost;
                     
                     if (canAfford) {
                         document.getElementById('affordability-message').textContent = '✅ You have sufficient balance for this purchase';
                         document.getElementById('affordability-message').className = 'text-center text-sm md:text-base font-bold text-green-600';
                         confirmationButtons.classList.remove('hidden');
                     } else {
-                        document.getElementById('affordability-message').textContent = '❌ Insufficient balance for this purchase';
+                        document.getElementById('affordability-message').textContent = `❌ Insufficient balance. You have ₹${userBalance.toFixed(2)} but need ₹${cost.toFixed(2)}`;
                         document.getElementById('affordability-message').className = 'text-center text-sm md:text-base font-bold text-red-600';
                         confirmationButtons.classList.add('hidden');
                     }
@@ -400,5 +407,6 @@
     </script>
 </body>
 </html>
+
 
 
